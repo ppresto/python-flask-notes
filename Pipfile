@@ -8,6 +8,9 @@ python-dotenv = "*"
 
 [packages]
 flask = "*"
+flask-migrate = "*"
+psycopg2-binary = "*"
+flask-sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"
