@@ -146,9 +146,9 @@ docker run -it -p3000:3000 --name=notes --rm --network=hashi_default \
 http://localhost:3000
 
 # References
-Linux Acadamy Training
-Flask: http://flask.pocoo.org/docs/1.0/tutorial/database/
-SQLAlchemy: http://flask-sqlalchemy.pocoo.org/2.3/
-Flask Views: http://flask.pocoo.org/docs/1.0/tutorial/views/
-Flask Templates: http://flask.pocoo.org/docs/1.0/tutorial/templates/
-Werkzeug: https://palletsprojects.com/p/werkzeug/
+* Linux Acadamy Training
+* Flask: http://flask.pocoo.org/docs/1.0/tutorial/database/
+* SQLAlchemy: http://flask-sqlalchemy.pocoo.org/2.3/
+* Flask Views: http://flask.pocoo.org/docs/1.0/tutorial/views/
+* Flask Templates: http://flask.pocoo.org/docs/1.0/tutorial/templates/
+* Werkzeug: https://palletsprojects.com/p/werkzeug/
