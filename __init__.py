@@ -5,6 +5,12 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
+from dotenv import load_dotenv
+from pathlib import Path  # python3 only
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path, override=True, verbose=True)
+
 def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_mapping(
@@ -100,6 +106,15 @@ def create_app(test_config=None):
     @require_login
     def note_index():
         return render_template('note_index.html', notes=g.user.notes)
+
+    @app.route('/credentials')
+    @require_login
+    def credentials():
+        db_user = os.environ.get('DB_USERNAME', default='notes')
+        db_password = os.environ.get('DB_PASSWORD', default='')
+        db_host = os.environ.get('DB_HOST', default='localhost')
+        db_port = os.environ.get('DB_PORT', default='5432')
+        return render_template('credentials.html', db_host=db_host+':'+db_port, db_user=db_user, db_password=db_password)
 
     @app.route('/notes/new', methods=('GET', 'POST'))
     @require_login
