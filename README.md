@@ -4,14 +4,6 @@ python-flask-notes
 # Setup
 This allows you to save notes and supports markup language in the body.
 
-# References
-Linux Acadamy Training
-Flask: http://flask.pocoo.org/docs/1.0/tutorial/database/
-SQLAlchemy: http://flask-sqlalchemy.pocoo.org/2.3/
-Flask Views: http://flask.pocoo.org/docs/1.0/tutorial/views/
-Flask Templates: http://flask.pocoo.org/docs/1.0/tutorial/templates/
-Werkzeug: https://palletsprojects.com/p/werkzeug/
-
 # Setup Project
 Setup your Python and PostgreSQL environment as a prereq.  You can refer to 'mypython' project to use containers.
 
@@ -27,8 +19,40 @@ vi models.py
 vi __init__.py
 ```
 
-## Setup PostgreSQL DB
-### Initial DB
+## Quick PostgreSQL Setup
+
+### Create Notes DB
+Using docker start your PostgreSQL instance.
+```
+source setEnv.sh
+```
+By sourcing setEnv.sh you enable the "runpostgres" alias to start your notesdb instance quickly.
+
+```
+runpostgres() {
+  docker run -d --name postgres \
+    --name notesdb \
+    -e POSTGRES_USER=$POSTGRES_USER \
+    -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+    -e POSTGRES_DB=notes \
+    -p 80:5432 \
+    -p 5432:5432 \
+    --restart always \
+    postgres:9.6.8-alpine "$@"
+}
+```
+### Populate the notes DB.
+Using the roles and sql dump files in the ./database directory lets restore a working database.
+
+```
+psql postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${HOST}:5432/notes < notes_roles.sql
+
+psql postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${HOST}:5432/notes < notes_dump.sql
+```
+
+## PostgreSQL Setup with sample DB and Flask Migrate
+
+### Create sample DB
 Make sure you have docker installed and access to the internet.  The db_setup.sh script will ask you to set db $POSTGRES_USER / $POSTGRES_PASSWORD, and defaults the $POSTGRES_DB='sample'.  It will import 1000 rows of sample data and setup the container to list on ports 80 and 5432
 ```
 cd docker/scripts
@@ -46,18 +70,17 @@ count
 (1 row)
 ```
 
-### Create Notes DB
-Using docker
+### Create notes DB
+Using Docker
 ```
 docker exec -i postgres psql postgres -U demo -c "CREATE DATABASE notes;”
 ```
-
-Using psql (assuing an existing db sample for connection)
+Using psql
 ```
 psql postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${HOST}:5432/sample -c "CREATE DATABASE notes;”
 ```
 
-### Use Flask Migrate to create additional tables
+### Use Flask Migrate to create required tables
 Initialize, generate migration, and use upgrade to run it. See what migrate is doing by reviewing ./migrations/versions/b8f90d067af9_.py
 ```
 flask db init
@@ -76,5 +99,34 @@ $ export FLASK_APP='.'
 $ flask run --host=0.0.0.0 --port=3000
 ```
 
-#  Application URI's
-http://localhost:3000/notes
+# Docker
+
+## Build Docker image
+```
+cd ./notes
+docker build -t ppresto/notes .
+docker push
+```
+## Run Docker image
+```
+docker run -it -p3000:3000 --name=notes --rm ppresto/notes
+```
+
+## Run image with Hashi Vault
+the run.sh will look for vault endpoints if defined and get dynamic PostgreSQL secret to connect to DB.
+
+```
+docker run -it -p3000:3000 --name=notes --rm --network=hashi_default \
+-e VAULT_TOKEN="s.<VAULT_TOKEN>" -e VAULT_ADDR="http://vault:8200" ppresto/notes
+```
+
+#  Application URL
+http://localhost:3000
+
+# References
+Linux Acadamy Training
+Flask: http://flask.pocoo.org/docs/1.0/tutorial/database/
+SQLAlchemy: http://flask-sqlalchemy.pocoo.org/2.3/
+Flask Views: http://flask.pocoo.org/docs/1.0/tutorial/views/
+Flask Templates: http://flask.pocoo.org/docs/1.0/tutorial/templates/
+Werkzeug: https://palletsprojects.com/p/werkzeug/
