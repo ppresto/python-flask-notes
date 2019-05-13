@@ -1,6 +1,28 @@
 python-flask-notes
 ====================
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Setup](#setup)
+- [Setup Project](#setup-project)
+	- [Create virtual environment](#create-virtual-environment)
+	- [Quick PostgreSQL Setup](#quick-postgresql-setup)
+		- [Create Notes DB](#create-notes-db)
+		- [Populate the notes DB.](#populate-the-notes-db)
+	- [PostgreSQL Setup with sample DB and Flask Migrate](#postgresql-setup-with-sample-db-and-flask-migrate)
+		- [Create sample DB](#create-sample-db)
+		- [Create notes DB](#create-notes-db)
+		- [Use Flask Migrate to create required tables](#use-flask-migrate-to-create-required-tables)
+	- [Run Flask as you develope](#run-flask-as-you-develope)
+- [Docker](#docker)
+	- [Build Docker image](#build-docker-image)
+	- [Run Docker image](#run-docker-image)
+	- [Run image with Hashi Vault](#run-image-with-hashi-vault)
+- [Application URL](#application-url)
+- [References](#references)
+
+<!-- /TOC -->
+
 # Setup
 This allows you to save notes and supports markup language in the body.
 
